@@ -1,10 +1,5 @@
-
 function App() {
-
-  return (
-    <div className="bg-gray-600">test
-    </div>
-  )
+  return <main className='min-h-screen'>test</main>;
 }
 
-export default App
+export default App;
