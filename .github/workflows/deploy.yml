@@ -1,0 +1,55 @@
+name: Build and Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow only on the `main` branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔧 Disable Husky in CI
+        run: npm pkg set scripts.prepare="echo 'Skipping Husky in CI'"
+
+      - name: 🛠️ Build the project
+        run: npm run build
+
+      - name: 🚀 Deploy to `build` branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Authenticate with GitHub
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+
+          # Check if the `build` branch exists
+          if git ls-remote --exit-code --heads origin build; then
+            git fetch origin build
+            git checkout build
+            git rm -rf . # Remove all existing content
+          else
+            git checkout --orphan build # Create a new empty branch if it doesn't exist
+          fi
+
+          # Copy the build files
+          cp -r dist/* .
+
+          git add .
+          git commit -m "🚀 Automated build deployment"
+          git push --force origin build
