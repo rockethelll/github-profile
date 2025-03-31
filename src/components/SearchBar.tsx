@@ -1,110 +1,72 @@
 import { z } from 'zod';
-import { useState, useEffect } from 'react';
+import axios, { AxiosError } from 'axios';
 import { useDebounce } from '../hooks/useDebounce';
-import axios from 'axios';
-import { SearchInput } from './SearchInput';
-import { UserDropdown } from './UserDropdown';
-import { RepositoryList } from './RepositoryList';
-import type { GithubUser, Repository } from '../types/github';
+import { useEffect, useState } from 'react';
+import SearchInput from './SearchInput';
 
 const searchSchema = z.string().min(1, 'Username is required');
 
+type User = {
+  login: string;
+  avatar_url: string;
+  url: string;
+};
+
 const SearchBar = () => {
   const [search, setSearch] = useState('');
-  const [error, setError] = useState('');
-  const [users, setUsers] = useState<GithubUser[]>([]);
-  const [repos, setRepos] = useState<Repository[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingRepos, setIsLoadingRepos] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const debouncedSearch = useDebounce(search, 300);
+  const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User>();
+  const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
+    const searchResult = searchSchema.safeParse(debouncedSearch);
     const controller = new AbortController();
 
-    const searchUsers = async () => {
-      if (!debouncedSearch) {
-        setUsers([]);
-        return;
-      }
+    if (!searchResult.success) {
+      return;
+    }
 
+    setIsLoading(true);
+    setError(null);
+
+    const fetchUsers = async () => {
       try {
-        searchSchema.parse(debouncedSearch);
-        setError('');
-        setIsLoading(true);
-        const { data } = await axios.get(
+        const response = await axios.get(
           `https://api.github.com/search/users?q=${debouncedSearch}&per_page=5`,
-          {
-            signal: controller.signal,
-          },
+          { signal: controller.signal },
         );
-        setUsers(data.items || []);
+
+        setUser(response.data.items[0]);
       } catch (err) {
-        if (err instanceof z.ZodError) {
-          setError(err.errors[0].message);
-        }
-        if (!axios.isCancel(err)) {
-          setUsers([]);
+        if (err instanceof AxiosError) {
+          if (err.name === 'CanceledError') return;
+          setError(err.message);
         }
       } finally {
         setIsLoading(false);
       }
     };
 
-    searchUsers();
-    return () => controller.abort();
-  }, [debouncedSearch]);
+    fetchUsers();
 
-  useEffect(() => {
-    const fetchUserRepos = async () => {
-      if (!selectedUser) return;
-
-      setIsLoadingRepos(true);
-      try {
-        const { data } = await axios.get<Repository[]>(
-          `https://api.github.com/users/${selectedUser}/repos?sort=updated&per_page=100`,
-        );
-        setRepos(data);
-      } catch (error) {
-        console.error('Error fetching repos:', error);
-        setRepos([]);
-      } finally {
-        setIsLoadingRepos(false);
-      }
+    return () => {
+      controller.abort();
     };
-
-    fetchUserRepos();
-  }, [selectedUser]);
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setShowDropdown(true);
-    setSelectedUser(null);
-    setRepos([]);
-  };
-
-  const handleUserSelect = (user: GithubUser) => {
-    setSearch(user.login);
-    setShowDropdown(false);
-    setSelectedUser(user.login);
-  };
+  }, [debouncedSearch]);
 
   return (
     <div className='relative z-10 w-[354px] sm:w-[484px] h-full top-8'>
-      <SearchInput
-        value={search}
-        onChange={handleSearchChange}
-        onFocus={() => setShowDropdown(true)}
-      />
-
-      {error && <p className='text-red-500 text-sm mt-1'>{error}</p>}
-
-      {showDropdown && (search || isLoading) && (
-        <UserDropdown users={users} isLoading={isLoading} onSelectUser={handleUserSelect} />
+      <SearchInput search={search} setSearch={setSearch} error={error} />
+      {isLoading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {user && (
+        <p>{user.login}</p>
+        // <div className='flex items-center gap-4'>
+        //   <img src={user.avatar_url} alt={user.login} className='w-10 h-10 rounded-full' />
+        //   <p>{user.login}</p>
+        // </div>
       )}
-
-      {selectedUser && <RepositoryList repos={repos} isLoading={isLoadingRepos} />}
     </div>
   );
 };
