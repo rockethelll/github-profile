@@ -1,1 +1,22 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  @apply min-h-screen font-vietnam;
+}
+
+@theme {
+  --font-vietnam: Be Vietnam Pro, sans-serif;
+  --color-background : oklch(0.28 0.034 262.78); /* #20293A */
+  --color-foreground : oklch(0.87 0.0175 256.29); /* #CDD5E0 */
+  --color-card-text : oklch(0.71 0.0309 259.58); /* #97a3b6 */
+  --color-se : oklch(0.37 0.0343 260.17); /* #364153 */
+  --color-gradient-1 :oklch(0.21 0.037 269.04);  /* #111729 */
+  --color-gradient-2 : oklch(0.25 0.0814 280.88); /* #1D1B48 */
+}
+
+.card {
+  background: linear-gradient(95deg, #111729 3%, #1d1b48 99.61%);
+}

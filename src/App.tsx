@@ -1,10 +1,13 @@
+import BackGroundPattern from './components/BackgroundPattern';
+import SearchBar from './components/SearchBar';
 
 function App() {
-
   return (
-    <div className="bg-gray-600">test
-    </div>
-  )
+    <main className='min-h-screen bg-background text-foreground relative flex flex-col items-center'>
+      <BackGroundPattern />
+      <SearchBar />
+    </main>
+  );
 }
 
-export default App
+export default App;
