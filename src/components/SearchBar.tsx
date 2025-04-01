@@ -1,71 +1,77 @@
-import { z } from 'zod';
-import axios, { AxiosError } from 'axios';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect, useState } from 'react';
 import SearchInput from './SearchInput';
-
-const searchSchema = z.string().min(1, 'Username is required');
-
-type User = {
-  login: string;
-  avatar_url: string;
-  url: string;
-};
-
+import { RepositoryList } from './RepositoryList';
+import { useGithubRepos } from '../hooks/useGithubRepos';
+import { useGithubUser } from '../hooks/useGithubUser';
+import { useStore } from '../store/useStore';
 const SearchBar = () => {
   const [search, setSearch] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User>();
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
+  const { user } = useStore();
   const debouncedSearch = useDebounce(search, 500);
+  const { isLoading, error, fetchUser } = useGithubUser(debouncedSearch);
+  const { repos, isLoading: isLoadingRepos, fetchRepos } = useGithubRepos();
 
   useEffect(() => {
-    const searchResult = searchSchema.safeParse(debouncedSearch);
-    const controller = new AbortController();
+    fetchUser(debouncedSearch);
+  }, [debouncedSearch, fetchUser]);
 
-    if (!searchResult.success) {
-      return;
+  useEffect(() => {
+    if (selectedUser) {
+      fetchRepos(selectedUser);
     }
+  }, [selectedUser, fetchRepos]);
 
-    setIsLoading(true);
-    setError(null);
-
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.github.com/search/users?q=${debouncedSearch}&per_page=5`,
-          { signal: controller.signal },
-        );
-
-        setUser(response.data.items[0]);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          if (err.name === 'CanceledError') return;
-          setError(err.message);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUsers();
-
-    return () => {
-      controller.abort();
-    };
-  }, [debouncedSearch]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (search) {
+      fetchUser(search);
+      fetchRepos(search);
+    }
+  };
 
   return (
     <div className='relative z-10 w-[354px] sm:w-[484px] h-full top-8'>
-      <SearchInput search={search} setSearch={setSearch} error={error} />
-      {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {user && (
-        <p>{user.login}</p>
-        // <div className='flex items-center gap-4'>
-        //   <img src={user.avatar_url} alt={user.login} className='w-10 h-10 rounded-full' />
-        //   <p>{user.login}</p>
-        // </div>
+      <SearchInput
+        search={search}
+        setSearch={setSearch}
+        error={error}
+        onSubmit={handleSubmit}
+      />
+      {error && <p className='p-2 text-sm text-red-500'>{error}</p>}
+      {isLoading && <p className='p-2 text-sm text-foreground'>Loading...</p>}
+      {search.length > 0 && !isLoading && user && (
+        <div className='absolute w-full mt-2 overflow-hidden rounded-lg shadow-lg bg-gradient-1'>
+          <div
+            key={user.login}
+            className='flex items-center gap-4 p-2 h-[88px] cursor-pointer hover:bg-white/10'
+            onClick={() => {
+              setSearch(user.login);
+              setSelectedUser(user.login);
+              setSearch('');
+            }}
+          >
+            <img src={user.avatar_url} alt={user.login} className='w-[72px] h-[72px] rounded-xl' />
+            <div className='flex flex-col'>
+              <p className='font-semibold'>{user.login}</p>
+              <p className='overflow-hidden text-sm text-card-text '>
+                {user.bio?.length > 100 ? `${user.bio.slice(0, 70)}...` : user.bio}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      {search.length > 0 && !isLoading && !user && (
+        <div className='absolute w-full p-3 mt-2 rounded-lg shadow-lg bg-gradient-1'>
+          <p className='text-sm text-gray-500'>No user found</p>
+        </div>
+      )}
+      {selectedUser && (
+        <div className='mt-8'>
+          <RepositoryList repos={repos} isLoading={isLoadingRepos} />
+        </div>
       )}
     </div>
   );

@@ -20,10 +20,10 @@ const RepositoryCard = ({ repo }: RepositoryCardProps) => (
     href={repo.html_url}
     target='_blank'
     rel='noopener noreferrer'
-    className='p-4 bg-background rounded-lg shadow hover:shadow-md transition-shadow'
+    className='p-4 transition-shadow rounded-lg shadow bg-background hover:shadow-md'
   >
-    <h3 className='font-semibold text-lg'>{repo.name}</h3>
-    {repo.description && <p className='text-sm text-gray-600 mt-1'>{repo.description}</p>}
+    <h3 className='text-lg font-semibold'>{repo.name}</h3>
+    {repo.description && <p className='mt-1 text-sm text-gray-600'>{repo.description}</p>}
     <div className='flex gap-4 mt-2 text-sm text-gray-500'>
       <span>⭐ {repo.stargazers_count}</span>
       <span>🍴 {repo.forks_count}</span>
@@ -53,7 +53,7 @@ export const RepositoryList = ({ repos, isLoading }: RepositoryListProps) => {
       {repos.length > 4 && (
         <button
           onClick={() => console.log('View all')}
-          className='mt-4 w-full py-2 text-center bg-background rounded-lg shadow hover:shadow-md transition-shadow'
+          className='w-full py-2 mt-4 text-center transition-shadow rounded-lg shadow bg-background hover:shadow-md'
         >
           View all {repos.length} repositories
         </button>
