@@ -1,7 +1,17 @@
 export type GithubUser = {
-  login: string;
-  avatar_url: string;
   id: number;
+  login: string;
+  name: string;
+  avatar_url: string;
+  bio: string;
+  public_repos: number;
+  followers: number;
+  following: number;
+  location: string;
+  blog: string;
+  twitter_username: string | null;
+  company: string | null;
+  created_at: string;
 };
 
 export type Repository = {

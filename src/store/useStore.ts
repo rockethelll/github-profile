@@ -1,19 +1,7 @@
 import { create } from 'zustand';
+import { GithubUser } from '../types/github';
 
-type GithubUser = {
-  login: string;
-  name: string;
-  avatar_url: string;
-  bio: string;
-  public_repos: number;
-  followers: number;
-  following: number;
-  location: string;
-  blog: string;
-  twitter_username: string | null;
-  company: string | null;
-  created_at: string;
-};
+
 
 type GithubRepo = {
   name: string;
