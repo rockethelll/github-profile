@@ -87,6 +87,7 @@
   --color-gradient-1: var(--gradient-1);
   --color-gradient-2: var(--gradient-2);
   --color-card-text: var(--card-text);
+  --color-separator: var(--separator);
   --font-vietnam: var(--vietnam);
 }
 
