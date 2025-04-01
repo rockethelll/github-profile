@@ -26,7 +26,6 @@ type GithubRepo = {
 
 type Store = {
   user: GithubUser | null;
-  isLoading: boolean;
   error: string | null;
   repos: GithubRepo[];
   setUser: (user: GithubUser | null) => void;
@@ -35,7 +34,6 @@ type Store = {
 
 export const useStore = create<Store>((set) => ({
   user: null,
-  isLoading: false,
   error: null,
   repos: [],
   setUser: (user) => set({ user }),
