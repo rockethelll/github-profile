@@ -1,18 +1,6 @@
 import { useState, useCallback } from 'react';
 import axios, { AxiosError } from 'axios';
-
-type Repository = {
-  id: number;
-  name: string;
-  description: string | null;
-  forks_count: number;
-  stargazers_count: number;
-  updated_at: string;
-  license: {
-    name: string;
-  } | null;
-  html_url: string;
-};
+import { Repository } from '../types/github';
 
 export const useGithubRepos = () => {
   const [repos, setRepos] = useState<Repository[]>([]);

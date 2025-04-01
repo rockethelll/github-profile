@@ -1,15 +1,4 @@
-type Repository = {
-  id: number;
-  name: string;
-  description: string | null;
-  forks_count: number;
-  stargazers_count: number;
-  updated_at: string;
-  license: {
-    name: string;
-  } | null;
-  html_url: string;
-};
+import { Repository } from '../types/github';
 
 type RepositoryCardProps = {
   repo: Repository;
@@ -60,4 +49,4 @@ export const RepositoryList = ({ repos, isLoading }: RepositoryListProps) => {
       )}
     </div>
   );
-}; 
+};

@@ -1,8 +1,8 @@
-import { GithubUser } from '../types/github';
+import { User } from '../types/github';
 import UserStats from './UserStats';
 
 type UserInfoProps = {
-  user: GithubUser;
+  user: User;
 };
 
 const UserInfo = ({ user }: UserInfoProps) => {
@@ -17,7 +17,7 @@ const UserInfo = ({ user }: UserInfoProps) => {
       </div>
       <UserStats label='Followers' value={user.followers} />
       <UserStats label='Following' value={user.following} />
-      <UserStats label='Location' value={user.location} />
+      <UserStats label='Location' value={user.location || 'Not specified'} />
     </div>
   );
 };
