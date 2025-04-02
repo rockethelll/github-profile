@@ -1,8 +1,7 @@
-import { GithubUser } from "../types/github";
-
+import { User } from '../types/github';
 
 type SearchDropdownProps = {
-  user: GithubUser;
+  user: User;
   setSearch: (search: string) => void;
   setSelectedUser: (selectedUser: string) => void;
 };

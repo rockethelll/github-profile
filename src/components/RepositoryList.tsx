@@ -1,35 +1,6 @@
-type Repository = {
-  id: number;
-  name: string;
-  description: string | null;
-  forks_count: number;
-  stargazers_count: number;
-  updated_at: string;
-  license: {
-    name: string;
-  } | null;
-  html_url: string;
-};
-
-type RepositoryCardProps = {
-  repo: Repository;
-};
-
-const RepositoryCard = ({ repo }: RepositoryCardProps) => (
-  <a
-    href={repo.html_url}
-    target='_blank'
-    rel='noopener noreferrer'
-    className='p-4 transition-shadow rounded-lg shadow bg-background hover:shadow-md'
-  >
-    <h3 className='text-lg font-semibold'>{repo.name}</h3>
-    {repo.description && <p className='mt-1 text-sm text-gray-600'>{repo.description}</p>}
-    <div className='flex gap-4 mt-2 text-sm text-gray-500'>
-      <span>⭐ {repo.stargazers_count}</span>
-      <span>🍴 {repo.forks_count}</span>
-    </div>
-  </a>
-);
+import { Repository } from '../types/github';
+import RepositoryCard from './RepositoryCard';
+import { useState } from 'react';
 
 type RepositoryListProps = {
   repos: Repository[];
@@ -37,7 +8,8 @@ type RepositoryListProps = {
 };
 
 export const RepositoryList = ({ repos, isLoading }: RepositoryListProps) => {
-  const firstFourRepos = repos.slice(0, 4);
+  const [showAll, setShowAll] = useState(false);
+  const displayedRepos = showAll ? repos : repos.slice(0, 4);
 
   if (isLoading) {
     return <div className='text-center'>Loading repositories...</div>;
@@ -45,19 +17,21 @@ export const RepositoryList = ({ repos, isLoading }: RepositoryListProps) => {
 
   return (
     <div className='mt-4'>
-      <div className='grid grid-cols-2 gap-4'>
-        {firstFourRepos.map((repo) => (
+      <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
+        {displayedRepos.map((repo) => (
           <RepositoryCard key={repo.id} repo={repo} />
         ))}
       </div>
-      {repos.length > 4 && (
-        <button
-          onClick={() => console.log('View all')}
-          className='w-full py-2 mt-4 text-center transition-shadow rounded-lg shadow bg-background hover:shadow-md'
-        >
-          View all {repos.length} repositories
-        </button>
+      {!showAll && repos.length > 4 && (
+        <div className='flex justify-center mt-[46px]'>
+          <button
+            onClick={() => setShowAll(true)}
+            className='px-6 py-2 text-center transition-all duration-200 cursor-pointer bg-background hover:text-white/60'
+          >
+            View all repositories
+          </button>
+        </div>
       )}
     </div>
   );
-}; 
+};

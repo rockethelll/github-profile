@@ -1,29 +1,20 @@
 import { create } from 'zustand';
-import { GithubUser } from '../types/github';
+import { User, Repository } from '../types/github';
 
-
-
-type GithubRepo = {
-  name: string;
-  description: string;
-  forks: number;
-  stargazers_count: number;
-  updated_at: string;
-  license: string;
-};
-
-type Store = {
-  user: GithubUser | null;
-  error: string | null;
-  repos: GithubRepo[];
-  setUser: (user: GithubUser | null) => void;
-  setRepos: (repos: GithubRepo[]) => void;
-};
+interface Store {
+  user: User | null;
+  selectedUser: string | null;
+  repos: Repository[];
+  setUser: (user: User | null) => void;
+  setSelectedUser: (username: string | null) => void;
+  setRepos: (repos: Repository[]) => void;
+}
 
 export const useStore = create<Store>((set) => ({
   user: null,
-  error: null,
+  selectedUser: null,
   repos: [],
   setUser: (user) => set({ user }),
+  setSelectedUser: (selectedUser) => set({ selectedUser }),
   setRepos: (repos) => set({ repos }),
 }));

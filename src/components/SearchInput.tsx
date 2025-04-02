@@ -1,3 +1,5 @@
+import SearchBar from '../assets/Search.svg';
+
 type SearchInputProps = {
   search: string;
   error: string | null;
@@ -13,17 +15,11 @@ const SearchInput = ({ search, setSearch, error, onSubmit }: SearchInputProps) =
         onSubmit={onSubmit}
       >
         <div className='relative w-full'>
-          <svg
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
+          <img
+            src={SearchBar}
+            alt='Search'
             className='absolute w-6 h-6 -translate-y-1/2 text-foreground left-3 top-1/2'
-          >
-            <circle cx='11' cy='11' r='7' stroke='currentColor' stroke-width='2' />
-            <path d='M20 20L17 17' stroke='currentColor' stroke-width='2' stroke-linecap='round' />
-          </svg>
+          />
           <input
             type='text'
             value={search}
