@@ -6,12 +6,7 @@ import { RepositoryList } from './components/RepositoryList';
 import { useGithubRepos } from './hooks/useGithubRepos';
 import { useEffect } from 'react';
 
-// TODO: remove line above and use the one below
-// import { user } from './data/user';
-
 function App() {
-  // const { selectedUser, repos } = useStore();
-  // TODO: remove line above and use the one below
   const { user, selectedUser, repos } = useStore();
   const { isLoading: isLoadingRepos, fetchRepos } = useGithubRepos();
 

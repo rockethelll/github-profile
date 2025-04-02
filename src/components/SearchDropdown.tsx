@@ -1,5 +1,4 @@
-import { User } from "../types/github";
-
+import { User } from '../types/github';
 
 type SearchDropdownProps = {
   user: User;

@@ -15,7 +15,11 @@ const RepositoryCard = ({ repo }: RepositoryCardProps) => (
   >
     <div className='flex-grow'>
       <h3 className='text-lg font-semibold'>{repo.name}</h3>
-      {repo.description && <p className='mt-3 text-card-text'>{repo.description}</p>}
+      {repo.description ? (
+        <p className='mt-3 text-card-text'>{repo.description}</p>
+      ) : (
+        <p className='mt-3 text-separator'>No description</p>
+      )}
     </div>
     <div className='flex items-center mt-5 text-card-text'>
       {repo.license && (
