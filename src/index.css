@@ -8,6 +8,10 @@
   background: linear-gradient(95deg, #111729 3%, #1d1b48 99.61%);
 }
 
+.card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 :root {
   --vietnam: Be Vietnam Pro, sans-serif;
   --background: rgb(32 41 58); /* #20293A */

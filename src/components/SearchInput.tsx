@@ -21,8 +21,8 @@ const SearchInput = ({ search, setSearch, error, onSubmit }: SearchInputProps) =
             xmlns='http://www.w3.org/2000/svg'
             className='absolute w-6 h-6 -translate-y-1/2 text-foreground left-3 top-1/2'
           >
-            <circle cx='11' cy='11' r='7' stroke='currentColor' stroke-width='2' />
-            <path d='M20 20L17 17' stroke='currentColor' stroke-width='2' stroke-linecap='round' />
+            <circle cx='11' cy='11' r='7' stroke='currentColor' strokeWidth='2' />
+            <path d='M20 20L17 17' stroke='currentColor' strokeWidth='2' strokeLinecap='round' />
           </svg>
           <input
             type='text'
