@@ -61,4 +61,3 @@ This project is licensed under the MIT License.
 Vite for the build tool.
 TypeScript for type safety.
 GitHub API for profile data.
-
