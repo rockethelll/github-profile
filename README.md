@@ -21,7 +21,7 @@ This project is a web application that allows users to view and explore GitHub p
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/rockethellgithub-profile-viewer.git
+git clone git@github.com:rockethelll/github-profile.git
 cd github-profile-viewer
 ```
 
